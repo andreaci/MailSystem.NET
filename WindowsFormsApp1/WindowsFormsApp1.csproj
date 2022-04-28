@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>WindowsFormsApp1</RootNamespace>
+    <AssemblyName>WindowsFormsApp1</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Class1.cs" />
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Class Library\ActiveUp.Net.Common\ActiveUp.Net.Common.csproj">
+      <Project>{3a83ae95-c23f-48b4-9f1a-ad4b32c37b93}</Project>
+      <Name>ActiveUp.Net.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Class Library\ActiveUp.Net.Dns\ActiveUp.Net.Dns.csproj">
+      <Project>{a82ce4dd-9b08-439c-bc28-cb7b2bffa85c}</Project>
+      <Name>ActiveUp.Net.Dns</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Class Library\ActiveUp.Net.Groupware\ActiveUp.Net.Groupware.csproj">
+      <Project>{c646ed2b-50b7-4178-befa-657f1259251f}</Project>
+      <Name>ActiveUp.Net.Groupware</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Class Library\ActiveUp.Net.Imap4\ActiveUp.Net.Imap4.csproj">
+      <Project>{6bee77df-2dd2-41c3-ba16-60e20b1eddcc}</Project>
+      <Name>ActiveUp.Net.Imap4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Class Library\ActiveUp.Net.Mail\ActiveUp.Net.Mail.csproj">
+      <Project>{2bd4c73e-c8db-420e-9505-96d3f3bca7b6}</Project>
+      <Name>ActiveUp.Net.Mail</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Class Library\ActiveUp.Net.Nntp\ActiveUp.Net.Nntp.csproj">
+      <Project>{ff4b354a-213b-415a-b8f7-582baafabc8c}</Project>
+      <Name>ActiveUp.Net.Nntp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Class Library\ActiveUp.Net.OpenPGP\ActiveUp.Net.OpenPGP.csproj">
+      <Project>{00cb8737-ba35-4775-afa4-b8cd446ab83f}</Project>
+      <Name>ActiveUp.Net.OpenPGP</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Class Library\ActiveUp.Net.Pop3\ActiveUp.Net.Pop3.csproj">
+      <Project>{3f01cf20-c49d-44a9-aa57-68f04915fe97}</Project>
+      <Name>ActiveUp.Net.Pop3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Class Library\ActiveUp.Net.Smtp\ActiveUp.Net.Smtp.csproj">
+      <Project>{d9bcd15e-a438-4554-89d3-1cf122167fdd}</Project>
+      <Name>ActiveUp.Net.Smtp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Class Library\ActiveUp.Net.Tests\ActiveUp.Net.Tests.csproj">
+      <Project>{5ad3438e-9024-4908-ba15-92726159c4fb}</Project>
+      <Name>ActiveUp.Net.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Class Library\ActiveUp.Net.WhoIs\ActiveUp.Net.WhoIs.csproj">
+      <Project>{1e4d8e5b-d422-47dc-9cf3-b8e88a4472af}</Project>
+      <Name>ActiveUp.Net.WhoIs</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Class Library\ActiveUp.Net\ActiveUp.Net.csproj">
+      <Project>{25da9502-b959-4e81-9368-471ae231bcc0}</Project>
+      <Name>ActiveUp.Net</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

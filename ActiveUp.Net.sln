@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32319.34
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Class Library", "Class Library", "{629D406B-F46A-4A9D-A31F-C5956E0AB157}"
 EndProject
@@ -56,6 +56,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActiveUp.Net.Tests", "Class Library\ActiveUp.Net.Tests\ActiveUp.Net.Tests.csproj", "{5AD3438E-9024-4908-BA15-92726159C4FB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActiveUp.Net", "Class Library\ActiveUp.Net\ActiveUp.Net.csproj", "{25DA9502-B959-4E81-9368-471AE231BCC0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsApp1", "WindowsFormsApp1\WindowsFormsApp1.csproj", "{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -606,6 +608,36 @@ Global
 		{25DA9502-B959-4E81-9368-471AE231BCC0}.Trial|Any CPU.Build.0 = Trial|Any CPU
 		{25DA9502-B959-4E81-9368-471AE231BCC0}.Trial|Mixed Platforms.ActiveCfg = Trial|Any CPU
 		{25DA9502-B959-4E81-9368-471AE231BCC0}.Trial|Mixed Platforms.Build.0 = Trial|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.Debug|.NET.Build.0 = Debug|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.MailSystem Dev|.NET.ActiveCfg = Debug|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.MailSystem Dev|.NET.Build.0 = Debug|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.MailSystem Dev|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.MailSystem Dev|Any CPU.Build.0 = Debug|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.MailSystem Dev|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.MailSystem Dev|Mixed Platforms.Build.0 = Debug|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.Release|.NET.ActiveCfg = Release|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.Release|.NET.Build.0 = Release|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.Retail|.NET.ActiveCfg = Release|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.Retail|.NET.Build.0 = Release|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.Retail|Any CPU.ActiveCfg = Release|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.Retail|Any CPU.Build.0 = Release|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.Retail|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.Retail|Mixed Platforms.Build.0 = Release|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.Trial|.NET.ActiveCfg = Debug|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.Trial|.NET.Build.0 = Debug|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.Trial|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.Trial|Any CPU.Build.0 = Debug|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.Trial|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F}.Trial|Mixed Platforms.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -632,5 +664,9 @@ Global
 		{D9BCD15E-A438-4554-89D3-1CF122167FDD} = {629D406B-F46A-4A9D-A31F-C5956E0AB157}
 		{5AD3438E-9024-4908-BA15-92726159C4FB} = {33BAFFED-FB5D-48EF-85D9-CDE2EB2CFA64}
 		{25DA9502-B959-4E81-9368-471AE231BCC0} = {629D406B-F46A-4A9D-A31F-C5956E0AB157}
+		{B1ACA405-9EF9-4D7F-8CEA-44AD36D35A2F} = {33BAFFED-FB5D-48EF-85D9-CDE2EB2CFA64}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CFB097AB-7158-4A40-90C3-C54C646BF177}
 	EndGlobalSection
 EndGlobal

@@ -899,7 +899,7 @@ namespace ActiveUp.Net.Mail
             OnAuthenticating(new AuthenticatingEventArgs(username, password, host));
             string response = Command("login " + username + " " + password);
             OnAuthenticated(new AuthenticatedEventArgs(username, password, host, response));
-            LoadMailboxes();
+            //LoadMailboxes();
             return response;
         }
         public IAsyncResult BeginLogin(string username, string password, AsyncCallback callback)
@@ -1042,6 +1042,7 @@ namespace ActiveUp.Net.Mail
 
         public byte[] CommandBinary(string command, string stamp, CommandOptions options = null)
         {
+            System.Diagnostics.Debug.WriteLine(command);
             if (options == null)
                 options = new CommandOptions();
 
@@ -1872,7 +1873,7 @@ namespace ActiveUp.Net.Mail
         {
             _delegateMailboxOperationReturnsString.EndInvoke(result);
         }
-
+        public bool SubFolders = true;
         /// <summary>
         /// Selects a mailbox on the server.
         /// </summary>
@@ -1919,7 +1920,10 @@ namespace ActiveUp.Net.Mail
             mailboxName = renderSafeParam(mailboxName);
 
             Mailbox mailbox = new Mailbox();
+            
+            if(SubFolders)
             mailbox.SubMailboxes = GetMailboxes(mailboxName, "*");
+            
             string response = Command("select \"" + mailboxName + "\"");
             string[] lines = System.Text.RegularExpressions.Regex.Split(response, "\r\n");
 
@@ -1945,7 +1949,9 @@ namespace ActiveUp.Net.Mail
             int unseen = 0;
             try
             {
-                unseen = Convert.ToInt32(FindLine(lines, "[UNSEEN ").Split(' ')[3].TrimEnd(']'));
+                string line = FindLine(lines, "[UNSEEN ");
+                if(!String.IsNullOrEmpty(line))
+                unseen = Convert.ToInt32(line.Split(' ')[3].TrimEnd(']'));
             }
             catch (Exception) { }
             mailbox.FirstUnseen = (response.ToLower().IndexOf("[unseen") != -1) ? unseen : 0;

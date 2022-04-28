@@ -1118,9 +1118,16 @@ namespace ActiveUp.Net.Mail
                 string[] dateParts = parts[3].Split(':');
                 int hour = Convert.ToInt32(dateParts[0]);
                 int minute = Convert.ToInt32(dateParts[1]);
+
                 int second = 0;
                 if (dateParts.Length > 2)
-                    second = Convert.ToInt32(dateParts[2]);
+                {
+                    if(dateParts[2].Contains("."))
+                        second = Convert.ToInt32(dateParts[2].Substring(0, dateParts[2].IndexOf(".")));
+                    else
+                        second = Convert.ToInt32(dateParts[2]);
+                }
+
                 int offset_hours = Convert.ToInt32(parts[4].Substring(0, 3));
                 int offset_minutes = Convert.ToInt32(parts[4].Substring(3, 2));
                 DateTime date = new DateTime(year, month, day, hour, minute, second, DateTimeKind.Utc);
