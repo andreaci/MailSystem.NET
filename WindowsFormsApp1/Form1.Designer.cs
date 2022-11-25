@@ -29,27 +29,38 @@
         private void InitializeComponent()
         {
             this.simpleButton1 = new DevExpress.XtraEditors.SimpleButton();
+            this.memoEdit1 = new DevExpress.XtraEditors.MemoEdit();
+            ((System.ComponentModel.ISupportInitialize)(this.memoEdit1.Properties)).BeginInit();
             this.SuspendLayout();
             // 
             // simpleButton1
             // 
-            this.simpleButton1.Location = new System.Drawing.Point(195, 298);
+            this.simpleButton1.Location = new System.Drawing.Point(22, 30);
+            this.simpleButton1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.simpleButton1.Name = "simpleButton1";
-            this.simpleButton1.Size = new System.Drawing.Size(110, 36);
+            this.simpleButton1.Size = new System.Drawing.Size(122, 29);
             this.simpleButton1.TabIndex = 0;
-            this.simpleButton1.Text = "simpleButton1";
+            this.simpleButton1.Text = "Connect to IMAP";
             this.simpleButton1.Click += new System.EventHandler(this.simpleButton1_Click);
+            // 
+            // memoEdit1
+            // 
+            this.memoEdit1.Location = new System.Drawing.Point(22, 98);
+            this.memoEdit1.Name = "memoEdit1";
+            this.memoEdit1.Size = new System.Drawing.Size(753, 306);
+            this.memoEdit1.TabIndex = 1;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1067, 554);
+            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.memoEdit1);
             this.Controls.Add(this.simpleButton1);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.memoEdit1.Properties)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -57,6 +68,7 @@
         #endregion
 
         private DevExpress.XtraEditors.SimpleButton simpleButton1;
+        private DevExpress.XtraEditors.MemoEdit memoEdit1;
     }
 }
 

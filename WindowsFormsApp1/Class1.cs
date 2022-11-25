@@ -7,8 +7,17 @@ using ActiveUp.Net.Mail;
 
 namespace WindowsFormsApp1
 {
+
+    public delegate void AuthenticatingEventHandler(object sender, AuthenticatingEventArgsBase e);
+    public delegate void AuthenticatedEventHandler(object sender, AuthenticatedEventArgsBase e);
+
+
     public class MailRepository
     {
+
+        public event AuthenticatingEventHandler Authenticating; 
+        public event AuthenticatedEventHandler Authenticated;
+
         private Imap4Client _client = null;
 
         public MailRepository(string mailServer, int port, bool ssl)
@@ -19,7 +28,7 @@ namespace WindowsFormsApp1
                 Client.Connect(mailServer, port);
         }
 
-        public async Task<string> LoginOAuth2(string user, string tenantId, string clientId, string clientSecret)
+        public async Task<bool> LoginOAuth2(string user, string tenantId, string clientId, string clientSecret)
         {
             return await Client.LoginOAuth2(user, tenantId, clientId, clientSecret);
         }
@@ -39,9 +48,23 @@ namespace WindowsFormsApp1
             get
             {
                 if (_client == null)
+                {
                     _client = new Imap4Client();
+                    _client.Authenticating += _client_Authenticating;
+                    _client.Authenticated += _client_Authenticated;
+                }
                 return _client;
             }
+        }
+
+        private void _client_Authenticated(object sender, AuthenticatedEventArgsBase e)
+        {
+            Authenticated?.Invoke(sender, e);
+        }
+
+        private void _client_Authenticating(object sender, AuthenticatingEventArgsBase e)
+        {
+            Authenticating?.Invoke(sender, e);
         }
 
         private MessageCollection GetMails(string mailBox, string searchPhrase)

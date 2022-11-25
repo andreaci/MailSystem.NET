@@ -58,7 +58,7 @@ namespace ActiveUp.Net.Mail
         /// <summary>
         /// Specify whether if the logger needs to append the Trace Console.
         /// </summary>
-        public static bool UseTraceConsole { get; set; } = false;
+        public static bool UseTraceConsole { get; set; } = true;
 
         /// <summary>
         /// Specify whether if the logging functions are disabled.

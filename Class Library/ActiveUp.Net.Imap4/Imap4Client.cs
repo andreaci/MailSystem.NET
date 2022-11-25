@@ -918,76 +918,92 @@ namespace ActiveUp.Net.Mail
             string baseAddress = $"https://login.microsoftonline.com/{tenantId}/oauth2/token";
             string grant_type = "client_credentials";
 
-            bool useMSAL = true;
-
-            if (useMSAL)
+            try
             {
-                var app = ConfidentialClientApplicationBuilder
-                            .Create(clientId)
-                            .WithTenantId(tenantId)
-                            .WithClientSecret(clientSecret)
-                            .Build();
+                bool useMSAL = true;
 
-                string[] scopes = new string[] {
-                    "https://outlook.office365.com/.default",
-                };
+                if (useMSAL)
+                {
+                    var app = ConfidentialClientApplicationBuilder
+                                .Create(clientId)
+                                .WithTenantId(tenantId)
+                                .WithClientSecret(clientSecret)
+                                .Build();
 
-                var result = await app.AcquireTokenForClient(scopes).ExecuteAsync();
-                string accessToken = result.AccessToken;
-                return accessToken;
+                    string[] scopes = new string[] {
+                        "https://outlook.office365.com/.default",
+                    };
+
+                    var result = await app.AcquireTokenForClient(scopes).ExecuteAsync();
+                    string accessToken = result.AccessToken;
+                    return accessToken;
+                }
+                else
+                {
+                    //[dt] token generation is OK but AUTH fails, further investigations needed
+                    var client = new HttpClient();
+
+                    List<string> scopes = new List<string>
+                    {
+                        "https://outlook.office365.com/.default",
+                    };
+
+                    var form = new Dictionary<string, string>
+                    {
+                        {"grant_type", grant_type},
+                        {"client_id", clientId},
+                        {"client_secret", clientSecret},
+                        {"scope", string.Join(" ",scopes) }
+                    };
+
+                    HttpResponseMessage tokenResponse = await client.PostAsync(baseAddress, new FormUrlEncodedContent(form));
+                    var jsonContent = await tokenResponse.Content.ReadAsStringAsync();
+                    OAuth2Token token = JsonConvert.DeserializeObject<OAuth2Token>(jsonContent);
+                    return token.AccessToken;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                //[dt] token generation is OK but AUTH fails, further investigations needed
-                var client = new HttpClient();
-
-                List<string> scopes = new List<string>
-                {
-                    "https://outlook.office365.com/.default",
-                };
-
-                var form = new Dictionary<string, string>
-                {
-                    {"grant_type", grant_type},
-                    {"client_id", clientId},
-                    {"client_secret", clientSecret},
-                    {"scope", string.Join(" ",scopes) }
-                };
-
-                HttpResponseMessage tokenResponse = await client.PostAsync(baseAddress, new FormUrlEncodedContent(form));
-                var jsonContent = await tokenResponse.Content.ReadAsStringAsync();
-                OAuth2Token token = JsonConvert.DeserializeObject<OAuth2Token>(jsonContent);
-                return token.AccessToken;
+                OnAuthenticating(new AuthenticatingEventArgsBase { Message = $"error during token generation: {ex.Message}\n{ex.StackTrace}" });
+                throw ex;
             }
         }
 
-        public async Task<string> LoginOAuth2(string userName, string tenantId, string clientId, string clientSecret)
+        public async Task<bool> LoginOAuth2(string userName, string tenantId, string clientId, string clientSecret)
         {
-            var token = await GetOAuth2Token(tenantId, clientId, clientSecret);
-
-            OnAuthenticating(new AuthenticatingOAuth2EventArgs(userName, host));
-
-            //https://learn.microsoft.com/en-us/exchange/client-developer/legacy-protocols/how-to-authenticate-an-imap-pop-smtp-application-by-using-oauth
             string response = "";
-            string xOauth2;
-            using (var ms = new MemoryStream(token.Length + 200))
+            try
             {
-                using (var bw = new BinaryWriter(ms))
+                var token = await GetOAuth2Token(tenantId, clientId, clientSecret);
+
+                OnAuthenticating(new AuthenticatingOAuth2EventArgs(userName, host));
+                //https://learn.microsoft.com/en-us/exchange/client-developer/legacy-protocols/how-to-authenticate-an-imap-pop-smtp-application-by-using-oauth
+                string xOauth2;
+                using (var ms = new MemoryStream(token.Length + 200))
                 {
-                    bw.Write(Encoding.ASCII.GetBytes("user="));
-                    bw.Write(Encoding.ASCII.GetBytes(userName));
-                    bw.Write((byte)1);
-                    bw.Write(Encoding.ASCII.GetBytes("auth=Bearer "));
-                    bw.Write(Encoding.ASCII.GetBytes(token));
-                    bw.Write((byte)1);
-                    bw.Write((byte)1);
+                    using (var bw = new BinaryWriter(ms))
+                    {
+                        bw.Write(Encoding.ASCII.GetBytes("user="));
+                        bw.Write(Encoding.ASCII.GetBytes(userName));
+                        bw.Write((byte)1);
+                        bw.Write(Encoding.ASCII.GetBytes("auth=Bearer "));
+                        bw.Write(Encoding.ASCII.GetBytes(token));
+                        bw.Write((byte)1);
+                        bw.Write((byte)1);
+                    }
+                    xOauth2 = Convert.ToBase64String(ms.ToArray());
                 }
-                xOauth2 = Convert.ToBase64String(ms.ToArray());
+                var cmd = $"AUTHENTICATE XOAUTH2 {xOauth2}";
+
+                response = Command(cmd);
             }
-            var cmd = $"AUTHENTICATE XOAUTH2 {xOauth2}";
-            response = Command(cmd);
+            catch (Exception ex)
+            {
+                OnAuthenticating(new AuthenticatingEventArgsBase { Message = $"error during token login: {ex.Message}\n{ex.StackTrace}" });
+                return false;
+            }
             OnAuthenticated(new AuthenticatedOAuth2EventArgs(userName, host, response));
-            return response;
+            return true;
         }
 
 

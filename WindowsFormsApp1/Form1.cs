@@ -27,13 +27,34 @@ namespace WindowsFormsApp1
         {
             MailRepository mailRep = new MailRepository("outlook.office365.com", 993, true);
 
-            string tenantId = "APP TENANTID";
-            string client_id = "APP CLIENTID";
-            string client_secret = "APP SECRET";
+            string tenantId = "**********************";
+            string client_id = "**********************";
+            string client_secret = "**********************";
 
-            await mailRep.LoginOAuth2("lyrahelpcc@softeam.it", tenantId, client_id, client_secret);
-            mailRep.ActivateMailBox("INBOX");
+            mailRep.Authenticated += MailRep_Authenticated;
+            mailRep.Authenticating += MailRep_Authenticating;
 
+            bool res = await mailRep.LoginOAuth2("lyrahelpcc@softeam.it", tenantId, client_id, client_secret);
+            if (res)
+            {
+              mailRep.ActivateMailBox("INBOX");
+            }
+        }
+
+        private void MailRep_Authenticating(object sender, ActiveUp.Net.Mail.AuthenticatingEventArgsBase e)
+        {
+            this.Invoke(new Action(() =>
+            {
+                memoEdit1.Text += e.Message + Environment.NewLine;
+            }));
+        }
+
+        private void MailRep_Authenticated(object sender, ActiveUp.Net.Mail.AuthenticatedEventArgsBase e)
+        {
+            this.Invoke(new Action(() =>
+            {
+                memoEdit1.Text += e.Message + Environment.NewLine; ;
+            }));
         }
     }
 }

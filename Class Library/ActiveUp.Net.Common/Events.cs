@@ -559,15 +559,15 @@ namespace ActiveUp.Net.Mail
 #if !PocketPC
     [System.Serializable]
 #endif
-
-
-    public class AuthenticatedEventArgsBase : System.EventArgs
+    public class AuthEventArgsBase : System.EventArgs
     {
+        public string Message { get; set; }
+    }
+
+    public class AuthenticatedEventArgsBase : AuthEventArgsBase
+    {
+
         protected string _username, _password, _host, _serverResponse;
-        /// <summary>
-        /// The username used to authenticate the user.
-        /// </summary>
-        
         public string Username
         {
             get
@@ -601,7 +601,7 @@ namespace ActiveUp.Net.Mail
 
     public class AuthenticatedEventArgs : AuthenticatedEventArgsBase
     {
-
+ 
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -655,6 +655,8 @@ namespace ActiveUp.Net.Mail
             _username = username;
             _host = host;
             _serverResponse = serverResponse;
+
+            Message = $"AUTHENTICATED: username = {_username}; host = {_host}; serverResponse = {_serverResponse}";
         }
         /// <summary>
         /// Constructor.
@@ -666,6 +668,7 @@ namespace ActiveUp.Net.Mail
             _username = username;
             _host = "unknown";
             _serverResponse = serverResponse;
+            Message = $"AUTHENTICATED: username = {_username}; serverResponse = {_serverResponse}";
         }
 
     }
@@ -677,8 +680,10 @@ namespace ActiveUp.Net.Mail
 #endif
 
 
-    public class AuthenticatingEventArgsBase : System.EventArgs
+
+    public class AuthenticatingEventArgsBase : AuthEventArgsBase
     {
+
         protected string _username, _host;
 
         /// <summary>
@@ -702,8 +707,7 @@ namespace ActiveUp.Net.Mail
                 return _host;
             }
         }
-
-    }
+  }
 
     public class AuthenticatingEventArgs : AuthenticatingEventArgsBase
     {
@@ -757,6 +761,7 @@ namespace ActiveUp.Net.Mail
         {
             _username = username;
             _host = host;
+            Message = $"AUTHENTICATING: username = {username}; host = {_host}";
         }
 
         /// <summary>
@@ -768,6 +773,7 @@ namespace ActiveUp.Net.Mail
         {
             _username = username;
             _host = "unkwown";
+            Message = $"AUTHENTICATING: username = {username}";
         }
     }
 
