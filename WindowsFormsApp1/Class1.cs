@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using ActiveUp.Net.Mail;
 
@@ -10,13 +11,17 @@ namespace WindowsFormsApp1
     {
         private Imap4Client _client = null;
 
-        public MailRepository(string mailServer, int port, bool ssl, string login, string password)
+        public MailRepository(string mailServer, int port, bool ssl)
         {
             if (ssl)
                 Client.ConnectSsl(mailServer, port);
             else
                 Client.Connect(mailServer, port);
-            Client.Login(login, password);
+        }
+
+        public async Task<string> LoginOAuth2(string user, string tenantId, string clientId, string clientSecret)
+        {
+            return await Client.LoginOAuth2(user, tenantId, clientId, clientSecret);
         }
 
         public IEnumerable<Message> GetAllMails(string mailBox)

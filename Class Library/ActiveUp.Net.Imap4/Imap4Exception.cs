@@ -15,6 +15,7 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using ActiveUp.Net.Imap4;
 using System;
 
 namespace ActiveUp.Net.Mail
@@ -42,7 +43,7 @@ namespace ActiveUp.Net.Mail
         /// Constructor, sets message to the specified value.
         /// </summary>
         /// <param name="message"></param>
-        public Imap4Exception(string message) : base(message) { }
+        public Imap4Exception(string message) : base(message.HideSensitiveData()) { }
 
         /// <summary>
         /// Constructor, sets message to the specified value

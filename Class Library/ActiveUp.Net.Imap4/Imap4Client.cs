@@ -21,6 +21,14 @@ using System.Text;
 using ActiveUp.Net.Security;
 using System.Net.Sockets;
 using System.Net.Security;
+using System.Net.Http;
+using Newtonsoft.Json;
+using System.Net;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
+using ActiveUp.Net.Imap4;
+using Microsoft.Identity.Client;
 
 namespace ActiveUp.Net.Mail
 {
@@ -261,13 +269,13 @@ namespace ActiveUp.Net.Mail
 
         #region Event triggers and logging
 
-        internal void OnAuthenticating(AuthenticatingEventArgs e)
+        internal void OnAuthenticating(AuthenticatingEventArgsBase e)
         {
             if (Authenticating != null)
                 Authenticating(this, e);
             Logger.AddEntry(GetType(), "Authenticating as <" + e.Username + "> on <" + e.Host + ">...", 2);
         }
-        internal void OnAuthenticated(AuthenticatedEventArgs e)
+        internal void OnAuthenticated(AuthenticatedEventArgsBase e)
         {
             if (Authenticated != null)
                 Authenticated(this, e);
@@ -396,7 +404,7 @@ namespace ActiveUp.Net.Mail
         }
 
         private string _Login(string username, string password)
-            {
+        {
             OnAuthenticating(new AuthenticatingEventArgs(username, password));
             string stamp = DateTime.Now.ToString("yyMMddhhmmss" + DateTime.Now.Millisecond.ToString());
             Command("authenticate login");
@@ -420,7 +428,7 @@ namespace ActiveUp.Net.Mail
         }
 
         private static string FindLine(string[] input, string pattern)
-            {
+        {
             foreach (string str in input)
                 if (str.IndexOf(pattern) != -1)
                     return str;
@@ -902,12 +910,92 @@ namespace ActiveUp.Net.Mail
             //LoadMailboxes();
             return response;
         }
+
+        internal async Task<string> GetOAuth2Token(string tenantId, string clientId, string clientSecret)
+        {
+            //https://stackoverflow.com/questions/38494279/how-do-i-get-an-oauth-2-0-authentication-token-in-c-sharp
+
+            string baseAddress = $"https://login.microsoftonline.com/{tenantId}/oauth2/token";
+            string grant_type = "client_credentials";
+
+            bool useMSAL = true;
+
+            if (useMSAL)
+            {
+                var app = ConfidentialClientApplicationBuilder
+                            .Create(clientId)
+                            .WithTenantId(tenantId)
+                            .WithClientSecret(clientSecret)
+                            .Build();
+
+                string[] scopes = new string[] {
+                    "https://outlook.office365.com/.default",
+                };
+
+                var result = await app.AcquireTokenForClient(scopes).ExecuteAsync();
+                string accessToken = result.AccessToken;
+                return accessToken;
+            }
+            else
+            {
+                //[dt] token generation is OK but AUTH fails, further investigations needed
+                var client = new HttpClient();
+
+                List<string> scopes = new List<string>
+                {
+                    "https://outlook.office365.com/.default",
+                };
+
+                var form = new Dictionary<string, string>
+                {
+                    {"grant_type", grant_type},
+                    {"client_id", clientId},
+                    {"client_secret", clientSecret},
+                    {"scope", string.Join(" ",scopes) }
+                };
+
+                HttpResponseMessage tokenResponse = await client.PostAsync(baseAddress, new FormUrlEncodedContent(form));
+                var jsonContent = await tokenResponse.Content.ReadAsStringAsync();
+                OAuth2Token token = JsonConvert.DeserializeObject<OAuth2Token>(jsonContent);
+                return token.AccessToken;
+            }
+        }
+
+        public async Task<string> LoginOAuth2(string userName, string tenantId, string clientId, string clientSecret)
+        {
+            var token = await GetOAuth2Token(tenantId, clientId, clientSecret);
+
+            OnAuthenticating(new AuthenticatingOAuth2EventArgs(userName, host));
+
+            //https://learn.microsoft.com/en-us/exchange/client-developer/legacy-protocols/how-to-authenticate-an-imap-pop-smtp-application-by-using-oauth
+            string response = "";
+            string xOauth2;
+            using (var ms = new MemoryStream(token.Length + 200))
+            {
+                using (var bw = new BinaryWriter(ms))
+                {
+                    bw.Write(Encoding.ASCII.GetBytes("user="));
+                    bw.Write(Encoding.ASCII.GetBytes(userName));
+                    bw.Write((byte)1);
+                    bw.Write(Encoding.ASCII.GetBytes("auth=Bearer "));
+                    bw.Write(Encoding.ASCII.GetBytes(token));
+                    bw.Write((byte)1);
+                    bw.Write((byte)1);
+                }
+                xOauth2 = Convert.ToBase64String(ms.ToArray());
+            }
+            var cmd = $"AUTHENTICATE XOAUTH2 {xOauth2}";
+            response = Command(cmd);
+            OnAuthenticated(new AuthenticatedOAuth2EventArgs(userName, host, response));
+            return response;
+        }
+
+
         public IAsyncResult BeginLogin(string username, string password, AsyncCallback callback)
         {
             _delegateLogin = Login;
             return _delegateLogin.BeginInvoke(username, password, callback, _delegateLogin);
         }
-
 
         /// <summary>
         /// Same as Login but doesn't load the AllMailboxes and Mailboxes properties of the Imap4Client object, ensuring faster operation.
@@ -1100,7 +1188,8 @@ namespace ActiveUp.Net.Mail
                     {
                         Logger.AddEntry(GetType(), "part response is null");
                         partResponse = "";
-                    } else
+                    }
+                    else
                         Logger.AddEntry(GetType(), "part response: " + partResponse);
                     buffer.Append(partResponse);
 
@@ -1167,7 +1256,7 @@ namespace ActiveUp.Net.Mail
                 sr.BaseStream.Read(bufferBytes, 0, bufferBytes.Length);
 
                 if (!sr.CurrentEncoding.Equals(Encoding.UTF8))
-                    {
+                {
                     var utf8Bytes = Encoding.Convert(sr.CurrentEncoding, Encoding.UTF8, sr.CurrentEncoding.GetBytes(bufferString));
                     bufferString = Encoding.UTF8.GetString(utf8Bytes);
                 }
@@ -1364,8 +1453,10 @@ namespace ActiveUp.Net.Mail
         /// Gets the communication stream of this object.
         /// </summary>
         /// <returns>A Stream object, either of type NetworkStream or SslStream if the channel is secured.</returns>
-        public Stream Stream {
-            get {
+        public Stream Stream
+        {
+            get
+            {
 #if !PocketPC
                 if (_sslStream != null)
                     return _sslStream;
@@ -1920,10 +2011,10 @@ namespace ActiveUp.Net.Mail
             mailboxName = renderSafeParam(mailboxName);
 
             Mailbox mailbox = new Mailbox();
-            
-            if(SubFolders)
-            mailbox.SubMailboxes = GetMailboxes(mailboxName, "*");
-            
+
+            if (SubFolders)
+                mailbox.SubMailboxes = GetMailboxes(mailboxName, "*");
+
             string response = Command("select \"" + mailboxName + "\"");
             string[] lines = System.Text.RegularExpressions.Regex.Split(response, "\r\n");
 
@@ -1950,8 +2041,8 @@ namespace ActiveUp.Net.Mail
             try
             {
                 string line = FindLine(lines, "[UNSEEN ");
-                if(!String.IsNullOrEmpty(line))
-                unseen = Convert.ToInt32(line.Split(' ')[3].TrimEnd(']'));
+                if (!String.IsNullOrEmpty(line))
+                    unseen = Convert.ToInt32(line.Split(' ')[3].TrimEnd(']'));
             }
             catch (Exception) { }
             mailbox.FirstUnseen = (response.ToLower().IndexOf("[unseen") != -1) ? unseen : 0;
@@ -1966,8 +2057,10 @@ namespace ActiveUp.Net.Mail
             mailbox.UidValidity = uidValidity;
 
             // flags.
-            foreach (string str in FindLine(lines, " FLAGS").Split(' ')) {
-                if (str.StartsWith("(\\") || str.StartsWith("\\")) {
+            foreach (string str in FindLine(lines, " FLAGS").Split(' '))
+            {
+                if (str.StartsWith("(\\") || str.StartsWith("\\"))
+                {
                     mailbox.ApplicableFlags.Add(str.Trim(new char[] { ' ', '\\', ')', '(' }));
                 }
             }

@@ -24,11 +24,11 @@ namespace ActiveUp.Net.Mail
     /// <summary>
     /// EventHandler to be used with the Authenticating event.
     /// </summary>
-    public delegate void AuthenticatingEventHandler(object sender, AuthenticatingEventArgs e);
+    public delegate void AuthenticatingEventHandler(object sender, AuthenticatingEventArgsBase e);
     /// <summary>
     /// EventHandler to be used with the Authenticated event.
     /// </summary>
-    public delegate void AuthenticatedEventHandler(object sender, AuthenticatedEventArgs e);
+    public delegate void AuthenticatedEventHandler(object sender, AuthenticatedEventArgsBase e);
     /// <summary>
     /// EventHandler to be used with the Nooping event.
     /// </summary>
@@ -559,10 +559,49 @@ namespace ActiveUp.Net.Mail
 #if !PocketPC
     [System.Serializable]
 #endif
-    public class AuthenticatedEventArgs : System.EventArgs
+
+
+    public class AuthenticatedEventArgsBase : System.EventArgs
     {
-        string _username,_password,_host,_serverResponse;
+        protected string _username, _password, _host, _serverResponse;
+        /// <summary>
+        /// The username used to authenticate the user.
+        /// </summary>
         
+        public string Username
+        {
+            get
+            {
+                return _username;
+            }
+        }
+
+        /// <summary>
+        /// The address of the remote server.
+        /// </summary>
+        public string Host
+        {
+            get
+            {
+                return _host;
+            }
+        }
+
+        /// <summary>
+        /// The server's response
+        /// </summary>
+        public string ServerResponse
+        {
+            get
+            {
+                return _serverResponse;
+            }
+        }
+    }
+
+    public class AuthenticatedEventArgs : AuthenticatedEventArgsBase
+    {
+
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -591,16 +630,6 @@ namespace ActiveUp.Net.Mail
             _serverResponse = serverResponse;
         }
         /// <summary>
-        /// The username used to authenticate the user.
-        /// </summary>
-        public string Username
-        {
-            get
-            {
-                return _username;
-            }
-        }
-        /// <summary>
         /// The password used to authenticate the user.
         /// </summary>
         public string Password
@@ -610,6 +639,59 @@ namespace ActiveUp.Net.Mail
                 return _password;
             }
         }
+      
+    }
+
+    public class AuthenticatedOAuth2EventArgs : AuthenticatedEventArgsBase
+    {
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="username">Username used to authenticate the user.</param>
+        /// <param name="host">Address of the remote server.</param>
+        /// <param name="serverResponse">The server response to the PASS command.</param>
+        public AuthenticatedOAuth2EventArgs(string username,  string host, string serverResponse)
+        {
+            _username = username;
+            _host = host;
+            _serverResponse = serverResponse;
+        }
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="username">Username used to authenticate the user.</param>
+        /// <param name="serverResponse">The server response to the PASS command.</param>
+        public AuthenticatedOAuth2EventArgs(string username, string serverResponse)
+        {
+            _username = username;
+            _host = "unknown";
+            _serverResponse = serverResponse;
+        }
+
+    }
+    /// <summary>
+    /// Represents a future authentication process.
+    /// </summary>
+#if !PocketPC
+    [System.Serializable]
+#endif
+
+
+    public class AuthenticatingEventArgsBase : System.EventArgs
+    {
+        protected string _username, _host;
+
+        /// <summary>
+        /// The username used to authenticate the user.
+        /// </summary>
+        public string Username
+        {
+            get
+            {
+                return _username;
+            }
+        }
+
         /// <summary>
         /// The address of the remote server.
         /// </summary>
@@ -620,27 +702,12 @@ namespace ActiveUp.Net.Mail
                 return _host;
             }
         }
-        /// <summary>
-        /// The server's response
-        /// </summary>
-        public string ServerResponse
-        {
-            get
-            {
-                return _serverResponse;
-            }
-        }
+
     }
 
-    /// <summary>
-    /// Represents a future authentication process.
-    /// </summary>
-#if !PocketPC
-    [System.Serializable]
-#endif
-    public class AuthenticatingEventArgs : System.EventArgs
+    public class AuthenticatingEventArgs : AuthenticatingEventArgsBase
     {
-        string _username,_password,_host;
+        string _password;
 
         /// <summary>
         /// Constructor.
@@ -665,16 +732,7 @@ namespace ActiveUp.Net.Mail
             _password = password;
             _host = "unkwown";
         }
-        /// <summary>
-        /// The username used to authenticate the user.
-        /// </summary>
-        public string Username
-        {
-            get
-            {
-                return _username;
-            }
-        }
+
         /// <summary>
         /// The password used to authenticate the user.
         /// </summary>
@@ -685,17 +743,34 @@ namespace ActiveUp.Net.Mail
                 return _password;
             }
         }
+    }
+
+    public class AuthenticatingOAuth2EventArgs : AuthenticatingEventArgsBase
+    {
         /// <summary>
-        /// The address of the remote server.
+        /// Constructor.
         /// </summary>
-        public string Host
+        /// <param name="username">Username used to authenticate the user.</param>
+        /// <param name="token">Password used to authenticate the user.</param>
+        /// <param name="host">Address of the remote server.</param>
+        public AuthenticatingOAuth2EventArgs(string username, string host)
         {
-            get
-            {
-                return _host;
-            }
+            _username = username;
+            _host = host;
+        }
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="username">Username used to authenticate the user.</param>
+        /// <param name="token">Password used to authenticate the user.</param>
+        public AuthenticatingOAuth2EventArgs(string username)
+        {
+            _username = username;
+            _host = "unkwown";
         }
     }
+
     /*/// <summary>
     /// EventArgs used by the ArticleRetrieved event.
     /// </summary>
